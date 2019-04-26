@@ -1,6 +1,8 @@
 var counter = 0
 
 window.addEventListener('load', function () {
+    sessionStorage.setItem('sessionStorageTest', 1);
+    localStorage.setItem('localStorageTest', 2);
     document.body.insertAdjacentHTML('afterbegin', 'NAVIGATOR <code class="json">' + JSON.stringify({
         appCodeName: navigator.appCodeName,
         appName: navigator.appName,
@@ -17,7 +19,8 @@ window.addEventListener('load', function () {
         product: navigator.product,
         userAgent: navigator.userAgent,
         vendor: navigator.vendor,
-        storage: sessionStorage
+        sessionStorage,
+        localStorage,
     }) + '</code>');
 
     highlightCode();
