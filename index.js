@@ -1,19 +1,40 @@
-var counter  = 0
+var counter = 0
 
 document.addEventListener('keydown', function (e) {
     e.stopPropagation();
-    var data = {
+    appendData(getKeyData(e));
+});
+document.addEventListener('click', function (e) {
+    e.stopPropagation();
+    appendData(getKeyData(e));
+});
+
+document.addEventListener('mousemove', function (e) {
+    e.stopPropagation();
+    appendData(getMouseData(e));
+});
+
+function getKeyData(e) {
+    return {
         code: e.code,
         key: e.key,
         keyCode: e.keyCode,
         type: e.type,
         which: e.which,
     }
-    var text = '<pre>' + (counter++) + '  ' + JSON.stringify(data) + '</pre>';
+}
+
+function getMouseData(e) {
+    return {
+        type: 'MOUSE',
+        x: e.x,
+        y: e.y,
+        screenX: e.screenX,
+        screenY: e.screenY,
+    }
+}
+
+function appendData(obj) {
+    var text = '<pre>' + (counter++) + '  ' + JSON.stringify(obj) + '</pre>';
     document.body.insertAdjacentHTML('afterbegin', text);
-    console.log(e);
-});
-document.addEventListener('click', function (e) {
-    //body.innerHTML = JSON.stringify(e)
-    console.log(e);
-});
+}
