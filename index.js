@@ -1,5 +1,28 @@
 var counter = 0
 
+window.addEventListener('load', function () {
+    document.body.insertAdjacentHTML('afterbegin', 'NAVIGATOR <code class="json">' + JSON.stringify({
+        appCodeName: navigator.appCodeName,
+        appName: navigator.appName,
+        appVersion: navigator.appVersion,
+        bluetooth: navigator.bluetooth,
+        connection: navigator.connection,
+        cookieEnabled: navigator.cookieEnabled,
+        deviceMemory: navigator.deviceMemory,
+        hardwareConcurrency: navigator.hardwareConcurrency,
+        language: navigator.language,
+        languages: navigator.languages,
+        maxTouchPoints: navigator.maxTouchPoints,
+        platform: navigator.platform,
+        product: navigator.product,
+        userAgent: navigator.userAgent,
+        vendor: navigator.vendor,
+        storage: sessionStorage
+    }) + '</code>');
+
+    highlightCode();
+})
+
 document.addEventListener('keydown', function (e) {
     e.stopPropagation();
     appendData(getKeyData(e));
@@ -11,8 +34,14 @@ document.addEventListener('click', function (e) {
 
 document.addEventListener('mousemove', function (e) {
     e.stopPropagation();
-    appendData(getMouseData(e));
+    //appendData(getMouseData(e));
 });
+
+function highlightCode() {
+    document.querySelectorAll('code').forEach((block) => {
+        hljs.highlightBlock(block);
+    });
+}
 
 function getKeyData(e) {
     return {
