@@ -1,14 +1,354 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Event catcher</title>
-    <link rel="stylesheet"
-          href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.6/build/styles/default.min.css">
-    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.6/build/highlight.min.js" async></script>
-    <script src="./index.js" async></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lajos Lengyel — lajos.service</title>
+<meta name="description" content="Lajos Lengyel — full-stack developer, CTO and co-founder at AION sense. Active (running) since 2016.">
+<meta name="theme-color" content="#16181C" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#E9E6E0" media="(prefers-color-scheme: light)">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='5' fill='%23D19A3E'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#16181C;--pane:#1C1F24;--border:#2C3138;--acc:#D19A3E;
+  --fg:#EDE9E1;--body:#C8C4BC;--mut:#8A9099;--dim:#6E7681;--ok:#7DA87B;
+  --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --sans:"IBM Plex Sans",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  --gap:16px;
+}
+@media (prefers-color-scheme:light){:root{
+  --bg:#E9E6E0;--pane:#F5F3EE;--border:#D3CFC6;--acc:#B07B1E;
+  --fg:#1B1D21;--body:#33363C;--mut:#6B7078;--dim:#8A8F97;--ok:#4E7A4B;
+}}
+*{box-sizing:border-box}
+html{background:var(--bg);color:var(--body);font:13px/1.7 var(--mono);scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0}
+a{color:inherit;text-decoration:none;border-bottom:1px solid var(--border)}
+a:hover{color:var(--acc);border-color:var(--acc)}
+[data-lang=en] [lang=hu],[data-lang=hu] [lang=en]{display:none}
+
+/* status bar — dwm style, pinned top */
+.bar{position:sticky;top:0;z-index:9;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 16px;background:var(--pane);border-bottom:1px solid var(--border);font-size:11px;letter-spacing:.06em}
+.ws{display:flex;gap:4px;margin:0;padding:0;list-style:none}
+.ws a{display:block;padding:3px 8px;border:0;border-radius:2px;color:var(--dim)}
+.ws a.on{background:var(--acc);color:var(--bg);font-weight:500}
+.meta{display:flex;gap:14px;align-items:center;color:var(--dim);white-space:nowrap}
+.meta .up{color:var(--acc)}
+
+/* tiles */
+main{display:grid;gap:var(--gap);padding:var(--gap)}
+section{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:var(--gap);scroll-margin-top:52px}
+.col{display:grid;gap:var(--gap);grid-template-rows:auto 1fr}
+.pane{background:var(--pane);border:1px solid var(--border);border-radius:3px;padding:18px 20px;min-width:0}
+.pane.focus{border-color:var(--acc)}
+.pane>.lbl{font-size:11px;letter-spacing:.08em;color:var(--dim);margin:0 0 10px}
+pre{margin:0;font:inherit;line-height:1.85;white-space:pre;overflow-x:auto;scrollbar-width:thin}
+.fg{color:var(--fg)}.ok{color:var(--ok)}.acc{color:var(--acc)}.mut{color:var(--mut)}.dim{color:var(--dim)}
+h1{font:300 clamp(40px,5.5vw,64px)/1.1 var(--mono);letter-spacing:-.02em;color:var(--fg);margin:6px 0 14px}
+.prose{font:16px/1.75 var(--sans);max-width:62ch;margin:0}
+hr{border:0;border-top:1px solid var(--border);margin:16px 0}
+.big{font:300 44px/1.2 var(--mono);letter-spacing:-.02em;color:var(--acc);margin:4px 0 2px}
+.nf{display:flex;gap:18px;align-items:flex-start}
+.nf pre{line-height:1.35;font-size:11px}
+.nf pre.tux{color:var(--acc)}
+
+/* journal */
+.journal{list-style:none;margin:0;padding:0}
+.journal li{display:grid;grid-template-columns:150px minmax(0,1fr);gap:0 20px;padding:14px 0;border-top:1px solid var(--border)}
+.journal li:first-child{border-top:0;padding-top:4px}
+.journal time{color:var(--dim);white-space:nowrap}
+.journal .t{color:var(--fg)}
+.journal .t small{font-size:inherit;color:var(--mut)}
+.journal p{font:15px/1.7 var(--sans);margin:4px 0 6px;max-width:66ch}
+.journal .tags{font-size:11px;color:var(--dim);letter-spacing:.04em}
+.journal li.cron time,.journal li.cron .t{color:var(--dim)}
+
+/* packages */
+.pk{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px 24px}
+.pk h3{font:400 11px/1.4 var(--mono);letter-spacing:.08em;color:var(--dim);margin:0 0 6px}
+.pk ul{list-style:none;margin:0;padding:0}
+.pk li{display:flex;justify-content:space-between;gap:12px}
+.pk li span{color:var(--dim)}
+
+footer{display:flex;justify-content:space-between;gap:12px;padding:8px 16px 18px;font-size:11px;letter-spacing:.06em;color:var(--dim)}
+
+@media (max-width:820px){
+  :root{--gap:8px}
+  section{grid-template-columns:minmax(0,1fr)}
+  .pane{padding:14px}
+  .journal li{grid-template-columns:minmax(0,1fr)}
+  .meta .host,.meta .date{display:none}
+  .ws a span{display:none}
+  footer{flex-direction:column;gap:4px}
+}
+</style>
 </head>
-<body id="body">
-<h1>Ready</h1>
+<body>
+
+<nav class="bar">
+  <ul class="ws">
+    <li><a href="#about" class="on">1 <span><span lang="en">about</span><span lang="hu">rólam</span></span></a></li>
+    <li><a href="#work">2 <span><span lang="en">work</span><span lang="hu">munka</span></span></a></li>
+    <li><a href="#stack">3 <span>stack</span></a></li>
+    <li><a href="#contact">4 <span><span lang="en">contact</span><span lang="hu">kapcsolat</span></span></a></li>
+  </ul>
+  <div class="meta">
+    <span class="host">lajos@remote</span>
+    <span class="date">2026-09-05</span>
+    <span class="up up-short">up 10y 2m</span>
+  </div>
+</nav>
+
+<main>
+
+<!-- ── 1: about ─────────────────────────────────────────── -->
+<section id="about">
+  <div class="pane focus">
+    <p class="lbl">1: <span lang="en">about</span><span lang="hu">rólam</span> — systemctl status lajos.service</p>
+    <h1>Lajos Lengyel</h1>
+<pre><span class="acc">$</span> <span class="mut">systemctl status lajos.service</span>
+<span class="ok">●</span> <span class="fg">lajos.service</span> — Full-Stack Developer, CTO
+     <span class="mut">Loaded:</span> loaded (/etc/lajos/lengyel.service; enabled)
+     <span class="mut">Active:</span> <span class="ok">active (running)</span> since 2016-07-01; <span class="acc up-years">10 years 2 months ago</span>
+   <span class="mut">Main PID:</span> 1 (aion-sense)
+      <span class="mut">Tasks:</span> 7 companies · 2 co-founded · 3 products from zero
+     <span class="mut">Memory:</span> react-native · supabase · postgres · cloudflare
+     <span class="mut">CGroup:</span> /system.slice/lajos.service
+             └─1 aion-sense --longevity --wristband</pre>
+    <hr>
+    <p class="prose" lang="en">Ten years of writing software; three of the products started from an empty repository. Now CTO and co-founder at AION sense, where a wristband reads a body and our software makes sense of it. Backend, frontend, database, hosting — usually all of them, usually alone. Remote, from Hungary.</p>
+    <p class="prose" lang="hu">Tíz éve írok szoftvert; három terméket üres repóból indítottunk. Most az AION sense-nél vagyok CTO és társalapító: egy karpánt olvassa a testet, a szoftverünk pedig értelmet ad az adatnak. Backend, frontend, adatbázis, hosting — általában mind, általában egyedül. Távolról, Magyarországról.</p>
+  </div>
+  <div class="col">
+    <div class="pane">
+      <p class="lbl">neofetch</p>
+      <div class="nf">
+<pre class="tux">   .--.
+  |o_o |
+  |:_/ |
+ //   \ \
+(|     | )
+/'\_   _/`\
+\___)=(___/</pre>
+<pre><span class="acc">lajos</span><span class="dim">@</span><span class="fg">remote</span>
+<span class="dim">──────────────</span>
+<span class="dim">Locale  </span>Hungary · remote
+<span class="dim">Host    </span>AION sense Kft.
+<span class="dim">Kernel  </span>Business Informatics
+<span class="dim">        </span>Univ. of Debrecen
+<span class="dim">Boot    </span>Jánosi Agricultural HS, IT
+<span class="dim">Uptime  </span><span class="up-long">10 years, 2 months</span>
+<span class="dim">Shell   </span>zsh
+<span class="dim">WM      </span>dwm</pre>
+      </div>
+    </div>
+    <div class="pane">
+      <p class="lbl">uptime</p>
+      <p class="big up-short">10y 2m</p>
+      <p class="dim" style="margin:0">since 2016-07-01</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── 2: work ──────────────────────────────────────────── -->
+<section id="work" style="grid-template-columns:minmax(0,1fr)">
+  <div class="pane">
+    <p class="lbl">2: <span lang="en">work</span><span lang="hu">munka</span> — journalctl -r -u lajos.service --since 2016-07-01</p>
+    <ol class="journal">
+      <li>
+        <time>2025-07 → <span lang="en">now</span><span lang="hu">most</span></time>
+        <div>
+          <div class="t">Started aion-sense.service <small>— CTO, <span lang="en">Co-Founder</span><span lang="hu">társalapító</span></small></div>
+          <p lang="en">A longevity app. Our smart wristband collects health data; we process it and turn it into recommendations and insights. I own nearly everything technical: development, database, hosting.</p>
+          <p lang="hu">Longevity-alapú mobilapp. Az okos karpántunk egészségügyi adatot gyűjt, mi feldolgozzuk, és ajánlásokat, betekintést adunk belőle. Nálam van szinte minden, ami IT: fejlesztés, adatbázis, hosting.</p>
+          <div class="tags">react-native · supabase · cloudflare · self-hosted AI</div>
+        </div>
+      </li>
+      <li>
+        <time>2022-01 → 2026-08</time>
+        <div>
+          <div class="t">Started inmedia-digital.service <small>— Full-Stack Developer</small></div>
+          <p lang="en">Maintained the front and back end of the company's website, including the admin dashboard and several white-label sites.</p>
+          <p lang="hu">A cég weboldalának front- és backendjét tartottam karban, az admin felülettel és több white-label oldallal együtt.</p>
+          <div class="tags">next.js · nuxt.js · node.js · express · legacy: yii (php), angular.js, jquery</div>
+        </div>
+      </li>
+      <li>
+        <time>2021-03 → 2022-01</time>
+        <div>
+          <div class="t">Started gravity-rd.service <small>— Frontend Developer</small></div>
+          <p lang="en">Built an admin dashboard on top of a product-recommendation engine for webshops.</p>
+          <p lang="hu">Admin felületet építettem egy webshopoknak szánt termékajánló motor fölé.</p>
+        </div>
+      </li>
+      <li>
+        <time>2019-03 → 2020-04</time>
+        <div>
+          <div class="t">Started peaqplus.service <small>— Full-Stack Developer, Assist-Intelligence Kft.</small></div>
+          <p lang="en">User and permission management software for hotel staff. I wrote about 95% of it.</p>
+          <p lang="hu">Felhasználó- és jogosultságkezelő szoftver szállodai személyzetnek. Nagyjából a 95%-át én írtam.</p>
+          <div class="tags">laravel · vue.js · mysql</div>
+        </div>
+      </li>
+      <li>
+        <time>2017-08 → 2018-05</time>
+        <div>
+          <div class="t">Started cloudent.service <small>— Full-Stack Developer, <span lang="en">Co-Founder</span><span lang="hu">társalapító</span></small></div>
+          <p lang="en">A dental patient-management system, built from zero in nine months. Backend, frontend, database, hosting — the whole stack was mine.</p>
+          <p lang="hu">Fogászati betegnyilvántartó rendszer, nulláról, kilenc hónap alatt. Backend, frontend, adatbázis, hosting — az egész stack az enyém volt.</p>
+          <div class="tags">laravel · vue.js · jquery · mysql · aws</div>
+        </div>
+      </li>
+      <li>
+        <time>2017-05 → 2017-08</time>
+        <div>
+          <div class="t">Started graphit.service <small>— Software Developer</small></div>
+          <p lang="en">Data interfaces for a production-scheduling system in C#, plus frontend work on a documentation site.</p>
+          <p lang="hu">Adatinterfészek egy termelésütemező szoftverhez C#-ban, mellette frontend feladatok egy dokumentációs oldalon.</p>
+          <div class="tags">c# · jquery</div>
+        </div>
+      </li>
+      <li>
+        <time>2016-07 → 2016-09</time>
+        <div>
+          <div class="t">Started ozeki.service <small>— Software Developer</small></div>
+          <p lang="en">.NET-based JavaScript framework development in C#. Frontend optimisation for Ozeki Dialer.</p>
+          <p lang="hu">.NET-alapú JavaScript keretrendszer fejlesztése C#-ban. Frontend-optimalizálás az Ozeki Dialerhez.</p>
+          <div class="tags">c# · .net · javascript</div>
+        </div>
+      </li>
+      <li class="cron">
+        <time>cron</time>
+        <div>
+          <div class="t">teach-java</div>
+          <p lang="en">Prepared six students for high-level programming languages; all of them passed on the first attempt.</p>
+          <p lang="hu">Hat diákot készítettem fel magas szintű programozási nyelvekből; mindegyik elsőre átment.</p>
+        </div>
+      </li>
+      <li class="cron">
+        <time>cron</time>
+        <div>
+          <div class="t">unity-game</div>
+          <p lang="en">Built my own 3D game in Unity, in C#.</p>
+          <p lang="hu">Saját 3D játékot készítettem Unityben, C#-ban.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ── 3: stack ─────────────────────────────────────────── -->
+<section id="stack">
+  <div class="pane">
+    <p class="lbl">3: stack — pacman -Qe</p>
+    <div class="pk">
+      <div><h3>lang</h3><ul>
+        <li>typescript <span>2016</span></li>
+        <li>javascript <span>2016</span></li>
+        <li>php <span>2017</span></li>
+        <li>c# <span>2016</span></li>
+        <li>sql <span>2017</span></li>
+      </ul></div>
+      <div><h3>frontend</h3><ul>
+        <li>react <span>2021</span></li>
+        <li>react-native <span>2025</span></li>
+        <li>next.js <span>2022</span></li>
+        <li>vue.js <span>2017</span></li>
+        <li>nuxt.js <span>2022</span></li>
+      </ul></div>
+      <div><h3>backend</h3><ul>
+        <li>node.js <span>2022</span></li>
+        <li>express <span>2022</span></li>
+        <li>laravel <span>2017</span></li>
+        <li>supabase <span>2025</span></li>
+        <li>stripe <span>2025</span></li>
+      </ul></div>
+      <div><h3>infra</h3><ul>
+        <li>linux <span>2016</span></li>
+        <li>postgresql <span>2025</span></li>
+        <li>mysql <span>2017</span></li>
+        <li>nginx <span>2017</span></li>
+        <li>aws <span>2017</span></li>
+        <li>cloudflare <span>2025</span></li>
+      </ul></div>
+      <div><h3>tools</h3><ul>
+        <li>figma</li>
+        <li>claude</li>
+        <li>git</li>
+      </ul></div>
+    </div>
+  </div>
+  <div class="pane">
+    <p class="lbl">cat /etc/motd</p>
+<pre lang="en">Boring technology that ships.
+The whole stack when needed,
+not by default.
+Real numbers or no numbers.</pre>
+<pre lang="hu">Unalmas technológia, ami kimegy.
+Ha kell, az egész stack —
+de nem alapból.
+Valódi számok, vagy semmilyen.</pre>
+  </div>
+</section>
+
+<!-- ── 4: contact ───────────────────────────────────────── -->
+<section id="contact">
+  <div class="pane">
+    <p class="lbl">4: <span lang="en">contact</span><span lang="hu">kapcsolat</span> — cat ~/.config/lajos/contact.conf</p>
+<pre><span class="acc">[contact]</span>
+<span class="mut">email</span>    = <a href="mailto:18.lajos@gmail.com">18.lajos@gmail.com</a>
+<span class="mut">phone</span>    = <a href="tel:+36702207656">+36 70 220 7656</a>
+<span class="mut">linkedin</span> = <a href="https://linkedin.com/in/lajos-lengyel">linkedin.com/in/lajos-lengyel</a>
+<span class="mut">github</span>   = <a href="https://github.com/lajoslengyel">github.com/lajoslengyel</a>
+<span class="mut">cv</span>       = <a href="CV_EN_Lajos_Lengyel.pdf">CV_EN_Lajos_Lengyel.pdf</a>
+<span class="mut">location</span> = Hungary
+<span class="mut">remote</span>   = yes
+
+<span class="acc">[availability]</span>
+<span class="mut">status</span>   = <span lang="en">open to interesting problems</span><span lang="hu">nyitott érdekes problémákra</span></pre>
+  </div>
+  <div class="pane">
+    <p class="lbl">exit</p>
+<pre><span class="acc">$</span> <span class="mut">logout</span>
+<span class="dim" lang="en">Connection to lajos closed.</span><span class="dim" lang="hu">Kapcsolat lezárva.</span>
+<span class="dim">[EOF]</span></pre>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <span>lajoslengyel.github.io</span>
+  <span><span lang="en">no framework, no build step</span><span lang="hu">keretrendszer és build nélkül</span> · 2026</span>
+</footer>
+
+<script>
+const $$ = s => document.querySelectorAll(s);
+
+// uptime, live — counted from the first job
+const start = new Date(2016, 6, 1), now = new Date();
+let y = now.getFullYear() - start.getFullYear(), m = now.getMonth() - start.getMonth();
+if (m < 0) { y--; m += 12; }
+$$('.up-short').forEach(e => e.textContent = (e.classList.contains('big') ? '' : 'up ') + `${y}y ${m}m`);
+$$('.up-years').forEach(e => e.textContent = `${y} years ${m} months ago`);
+$$('.up-long').forEach(e => e.textContent = `${y} years, ${m} months`);
+$$('.date').forEach(e => e.textContent = now.toISOString().slice(0, 10));
+
+// workspace chips follow scroll
+const chips = [...$$('.ws a')];
+const spy = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) chips.forEach(a => a.classList.toggle('on', a.hash === '#' + e.target.id));
+}), { rootMargin: '-45% 0px -50% 0px' });
+$$('main section').forEach(s => spy.observe(s));
+
+// keys 1–4 jump workspaces, like a WM
+addEventListener('keydown', e => {
+  const i = +e.key;
+  if (i >= 1 && i <= 4 && !e.metaKey && !e.ctrlKey && !e.altKey) chips[i - 1].click();
+});
+</script>
 </body>
 </html>
