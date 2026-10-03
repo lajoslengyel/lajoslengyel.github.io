@@ -97,11 +97,31 @@ footer{display:flex;justify-content:space-between;gap:12px;padding:8px 16px 18px
   .ws a span{display:none}
   footer{flex-direction:column;gap:4px}
 }
+
+/* print — light, single column, chrome and decoration hidden */
+@media print{
+  @page{margin:14mm}
+  :root{--bg:#fff;--pane:#fff;--border:#ccc;--acc:#8A5A00;--fg:#000;--body:#222;--mut:#555;--dim:#666;--ok:#2E6B2C}
+  html{background:#fff;font-size:10.5px}
+  .noprint,.nf pre.tux{display:none}
+  main{padding:0;gap:14px}
+  section{grid-template-columns:minmax(0,1fr);gap:14px}
+  .col{grid-template-rows:none}
+  .pane,.pane.focus{border:0;padding:0}
+  pre{white-space:pre-wrap;overflow:visible}
+  h1{font-size:32px;margin:0 0 8px}
+  .role{margin:0 0 10px}
+  .prose,.journal p,.journal ul{font-size:11px;max-width:none}
+  .journal>li{grid-template-columns:120px minmax(0,1fr);padding:8px 0;break-inside:avoid}
+  .pk>div,pre{break-inside:avoid}
+  .pane>.lbl{break-after:avoid}
+  a{border:0}
+}
 </style>
 </head>
 <body>
 
-<nav class="bar">
+<nav class="bar noprint">
   <ul class="ws">
     <li><a href="#about" class="on">1 <span><span lang="en">about</span><span lang="hu">rólam</span></span></a></li>
     <li><a href="#work">2 <span><span lang="en">work</span><span lang="hu">munka</span></span></a></li>
@@ -162,7 +182,7 @@ footer{display:flex;justify-content:space-between;gap:12px;padding:8px 16px 18px
 <span class="dim">WM      </span>dwm</pre>
       </div>
     </div>
-    <div class="pane">
+    <div class="pane noprint">
       <p class="lbl">uptime</p>
       <p class="big up-short">10y 3m</p>
       <p class="dim" style="margin:0">since 2016-07-01</p>
@@ -321,7 +341,7 @@ footer{display:flex;justify-content:space-between;gap:12px;padding:8px 16px 18px
       </ul></div>
     </div>
   </div>
-  <div class="pane">
+  <div class="pane noprint">
     <p class="lbl">cat /etc/motd</p>
 <pre lang="en">Boring technology that ships.
 The whole stack when needed,
@@ -351,7 +371,7 @@ Valódi számok, vagy semmilyen.</pre>
 <span class="acc">[availability]</span>
 <span class="mut">status</span>   = <span lang="en">open to interesting problems</span><span lang="hu">nyitott érdekes problémákra</span></pre>
   </div>
-  <div class="pane">
+  <div class="pane noprint">
     <p class="lbl">exit</p>
 <pre><span class="acc">$</span> <span class="mut">logout</span>
 <span class="dim" lang="en">Connection to lajos closed.</span><span class="dim" lang="hu">Kapcsolat lezárva.</span>
@@ -361,7 +381,7 @@ Valódi számok, vagy semmilyen.</pre>
 
 </main>
 
-<footer>
+<footer class="noprint">
   <span>lajoslengyel.github.io</span>
   <span><span lang="en">no framework, no build step</span><span lang="hu">keretrendszer és build nélkül</span> · 2026</span>
 </footer>
