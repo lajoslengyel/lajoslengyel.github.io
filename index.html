@@ -4,13 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lajos Lengyel — lajos.service</title>
-<meta name="description" content="Lajos Lengyel — full-stack developer, CTO and co-founder at AION sense. Active (running) since 2016.">
+<meta name="description" content="Lajos Lengyel — CTO and senior full-stack engineer, co-founder of AION sense. Active (running) since 2016.">
 <meta name="theme-color" content="#16181C" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#E9E6E0" media="(prefers-color-scheme: light)">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='5' fill='%23D19A3E'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<script>
+// pick language before first paint: saved choice, else browser language
+try { var l = localStorage.getItem('lang') } catch (e) {}
+l = l || (/^hu/i.test(navigator.language) ? 'hu' : 'en');
+document.documentElement.dataset.lang = document.documentElement.lang = l;
+</script>
 <style>
 :root{
   --bg:#16181C;--pane:#1C1F24;--border:#2C3138;--acc:#D19A3E;
@@ -37,6 +43,9 @@ a:hover{color:var(--acc);border-color:var(--acc)}
 .ws a.on{background:var(--acc);color:var(--bg);font-weight:500}
 .meta{display:flex;gap:14px;align-items:center;color:var(--dim);white-space:nowrap}
 .meta .up{color:var(--acc)}
+.lang{display:flex;border:1px solid var(--border);border-radius:2px}
+.lang button{font:inherit;letter-spacing:inherit;color:var(--dim);background:none;border:0;border-radius:0;padding:1px 7px;cursor:pointer}
+.lang button[aria-pressed=true]{background:var(--border);color:var(--fg)}
 
 /* tiles */
 main{display:grid;gap:var(--gap);padding:var(--gap)}
@@ -48,7 +57,8 @@ section{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:var(--gap);sc
 pre{margin:0;font:inherit;line-height:1.85;white-space:pre;overflow-x:auto;scrollbar-width:thin}
 .fg{color:var(--fg)}.ok{color:var(--ok)}.acc{color:var(--acc)}.mut{color:var(--mut)}.dim{color:var(--dim)}
 h1{font:300 clamp(40px,5.5vw,64px)/1.1 var(--mono);letter-spacing:-.02em;color:var(--fg);margin:6px 0 14px}
-.prose{font:16px/1.75 var(--sans);max-width:62ch;margin:0}
+.role{font-size:15px;line-height:1.4;color:var(--acc);margin:-6px 0 18px}
+.prose{font:16px/1.75 var(--sans);max-width:66ch;margin:0}
 hr{border:0;border-top:1px solid var(--border);margin:16px 0}
 .big{font:300 44px/1.2 var(--mono);letter-spacing:-.02em;color:var(--acc);margin:4px 0 2px}
 .nf{display:flex;gap:18px;align-items:flex-start}
@@ -57,17 +67,20 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
 
 /* journal */
 .journal{list-style:none;margin:0;padding:0}
-.journal li{display:grid;grid-template-columns:150px minmax(0,1fr);gap:0 20px;padding:14px 0;border-top:1px solid var(--border)}
-.journal li:first-child{border-top:0;padding-top:4px}
+.journal>li{display:grid;grid-template-columns:150px minmax(0,1fr);gap:0 20px;padding:14px 0;border-top:1px solid var(--border)}
+.journal>li:first-child{border-top:0;padding-top:4px}
 .journal time{color:var(--dim);white-space:nowrap}
+.journal time.live{color:var(--ok)}
 .journal .t{color:var(--fg)}
 .journal .t small{font-size:inherit;color:var(--mut)}
-.journal p{font:15px/1.7 var(--sans);margin:4px 0 6px;max-width:66ch}
+.journal p,.journal ul{font:15px/1.7 var(--sans);margin:4px 0 6px;max-width:72ch}
+.journal ul{padding-left:18px}
 .journal .tags{font-size:11px;color:var(--dim);letter-spacing:.04em}
-.journal li.cron time,.journal li.cron .t{color:var(--dim)}
+.journal>li.cron time,.journal>li.cron .t{color:var(--dim)}
+.badge{display:inline-block;font-size:10px;line-height:1.6;letter-spacing:.06em;text-transform:uppercase;color:var(--acc);border:1px solid var(--border);border-radius:2px;padding:0 6px;margin-left:8px;vertical-align:1px}
 
 /* packages */
-.pk{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px 24px}
+.pk{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px 32px}
 .pk h3{font:400 11px/1.4 var(--mono);letter-spacing:.08em;color:var(--dim);margin:0 0 6px}
 .pk ul{list-style:none;margin:0;padding:0}
 .pk li{display:flex;justify-content:space-between;gap:12px}
@@ -79,7 +92,7 @@ footer{display:flex;justify-content:space-between;gap:12px;padding:8px 16px 18px
   :root{--gap:8px}
   section{grid-template-columns:minmax(0,1fr)}
   .pane{padding:14px}
-  .journal li{grid-template-columns:minmax(0,1fr)}
+  .journal>li{grid-template-columns:minmax(0,1fr)}
   .meta .host,.meta .date{display:none}
   .ws a span{display:none}
   footer{flex-direction:column;gap:4px}
@@ -96,9 +109,10 @@ footer{display:flex;justify-content:space-between;gap:12px;padding:8px 16px 18px
     <li><a href="#contact">4 <span><span lang="en">contact</span><span lang="hu">kapcsolat</span></span></a></li>
   </ul>
   <div class="meta">
+    <div class="lang" role="group" aria-label="Language"><button type="button" data-set="en">EN</button><button type="button" data-set="hu">HU</button></div>
     <span class="host">lajos@remote</span>
-    <span class="date">2026-09-05</span>
-    <span class="up up-short">up 10y 2m</span>
+    <span class="date">2026-10-03</span>
+    <span class="up up-short">up 10y 3m</span>
   </div>
 </nav>
 
@@ -109,18 +123,20 @@ footer{display:flex;justify-content:space-between;gap:12px;padding:8px 16px 18px
   <div class="pane focus">
     <p class="lbl">1: <span lang="en">about</span><span lang="hu">rólam</span> — systemctl status lajos.service</p>
     <h1>Lajos Lengyel</h1>
+    <p class="role"><span lang="en">CTO · Senior Full-Stack Engineer</span><span lang="hu">CTO · Senior Full-Stack fejlesztő</span></p>
 <pre><span class="acc">$</span> <span class="mut">systemctl status lajos.service</span>
-<span class="ok">●</span> <span class="fg">lajos.service</span> — Full-Stack Developer, CTO
+<span class="ok">●</span> <span class="fg">lajos.service</span> — CTO · Senior Full-Stack Engineer
      <span class="mut">Loaded:</span> loaded (/etc/lajos/lengyel.service; enabled)
-     <span class="mut">Active:</span> <span class="ok">active (running)</span> since 2016-07-01; <span class="acc up-years">10 years 2 months ago</span>
+     <span class="mut">Active:</span> <span class="ok">active (running)</span> since 2016-07-01; <span class="acc up-years">10 years 3 months ago</span>
    <span class="mut">Main PID:</span> 1 (aion-sense)
-      <span class="mut">Tasks:</span> 7 companies · 2 co-founded · 3 products from zero
-     <span class="mut">Memory:</span> react-native · supabase · postgres · cloudflare
+      <span class="mut">Tasks:</span> 8 companies · 2 co-founded · 3 products from zero
+     <span class="mut">Memory:</span> typescript · react-native · supabase · postgres · cloudflare
      <span class="mut">CGroup:</span> /system.slice/lajos.service
-             └─1 aion-sense --longevity --wristband</pre>
+             ├─1 aion-sense --cto --longevity --wristband
+             └─2 bnbmates --freelance --direct-booking</pre>
     <hr>
-    <p class="prose" lang="en">Ten years of writing software; three of the products started from an empty repository. Now CTO and co-founder at AION sense, where a wristband reads a body and our software makes sense of it. Backend, frontend, database, hosting — usually all of them, usually alone. Remote, from Hungary.</p>
-    <p class="prose" lang="hu">Tíz éve írok szoftvert; három terméket üres repóból indítottunk. Most az AION sense-nél vagyok CTO és társalapító: egy karpánt olvassa a testet, a szoftverünk pedig értelmet ad az adatnak. Backend, frontend, adatbázis, hosting — általában mind, általában egyedül. Távolról, Magyarországról.</p>
+    <p class="prose" lang="en">Full-stack engineer and startup CTO with nearly ten years of shipping web and mobile products end to end, from architecture and database design to hosting. Co-founder and CTO of AION sense, a 6-person longevity health-tech startup heading into its pilot. Co-founded two companies and built several products largely on my own. Remote, from Hungary.</p>
+    <p class="prose" lang="hu">Full-stack fejlesztő és startup CTO: közel tíz éve építek web- és mobiltermékeket az elejétől a végéig, az architektúrától és az adatbázis-tervezéstől a hostingig. Jelenleg az AION sense társalapítója és CTO-ja vagyok — egy 6 fős longevity health-tech startupé, amely az első pilotjára készül. Két céget alapítottam társalapítóként, és több terméket nagyrészt egyedül építettem fel. Távolról, Magyarországról.</p>
   </div>
   <div class="col">
     <div class="pane">
@@ -135,19 +151,20 @@ footer{display:flex;justify-content:space-between;gap:12px;padding:8px 16px 18px
 \___)=(___/</pre>
 <pre><span class="acc">lajos</span><span class="dim">@</span><span class="fg">remote</span>
 <span class="dim">──────────────</span>
-<span class="dim">Locale  </span>Hungary · remote
+<span class="dim">Role    </span>CTO · Sr. Full-Stack
 <span class="dim">Host    </span>AION sense Kft.
+<span class="dim">Locale  </span>Hungary · remote
 <span class="dim">Kernel  </span>Business Informatics
 <span class="dim">        </span>Univ. of Debrecen
-<span class="dim">Boot    </span>Jánosi Agricultural HS, IT
-<span class="dim">Uptime  </span><span class="up-long">10 years, 2 months</span>
+<span class="dim">Lang    </span>hu (native) · en (B2)
+<span class="dim">Uptime  </span><span class="up-long">10 years, 3 months</span>
 <span class="dim">Shell   </span>zsh
 <span class="dim">WM      </span>dwm</pre>
       </div>
     </div>
     <div class="pane">
       <p class="lbl">uptime</p>
-      <p class="big up-short">10y 2m</p>
+      <p class="big up-short">10y 3m</p>
       <p class="dim" style="margin:0">since 2016-07-01</p>
     </div>
   </div>
@@ -159,55 +176,81 @@ footer{display:flex;justify-content:space-between;gap:12px;padding:8px 16px 18px
     <p class="lbl">2: <span lang="en">work</span><span lang="hu">munka</span> — journalctl -r -u lajos.service --since 2016-07-01</p>
     <ol class="journal">
       <li>
-        <time>2025-07 → <span lang="en">now</span><span lang="hu">most</span></time>
+        <time class="live">2025-07 → <span lang="en">now</span><span lang="hu">most</span></time>
         <div>
-          <div class="t">Started aion-sense.service <small>— CTO, <span lang="en">Co-Founder</span><span lang="hu">társalapító</span></small></div>
-          <p lang="en">A longevity app. Our smart wristband collects health data; we process it and turn it into recommendations and insights. I own nearly everything technical: development, database, hosting.</p>
-          <p lang="hu">Longevity-alapú mobilapp. Az okos karpántunk egészségügyi adatot gyűjt, mi feldolgozzuk, és ajánlásokat, betekintést adunk belőle. Nálam van szinte minden, ami IT: fejlesztés, adatbázis, hosting.</p>
-          <div class="tags">react-native · supabase · cloudflare · self-hosted AI</div>
+          <div class="t">Started aion-sense.service <small>— CTO &amp; <span lang="en">Co-Founder</span><span lang="hu">társalapító</span></small></div>
+          <ul lang="en">
+            <li>Building a longevity app that turns data from our smart wristband into personalised health insights.</li>
+            <li>Own the full technical stack: mobile app, admin panel, B2B dashboard, website, database and hosting.</li>
+            <li>Run self-hosted AI models that generate insights and recommendations from users’ health data.</li>
+            <li>Closed beta with ~50 testers in a 6-person team; first pilot coming up.</li>
+          </ul>
+          <ul lang="hu">
+            <li>Longevity appot építünk, ami az okos karpántunk adataiból személyre szabott egészségügyi betekintést ad.</li>
+            <li>Az enyém a teljes technikai stack: mobilapp, adminfelület, B2B dashboard, weboldal, adatbázis és hosting.</li>
+            <li>Saját üzemeltetésű AI modelleket futtatok, amelyek a felhasználók egészségügyi adataiból ajánlásokat és betekintést generálnak.</li>
+            <li>Zárt béta kb. 50 tesztelővel, 6 fős csapatban; hamarosan indul az első pilot.</li>
+          </ul>
+          <div class="tags">react-native · typescript · supabase · cloudflare · self-hosted AI</div>
         </div>
       </li>
       <li>
-        <time>2022-01 → 2026-08</time>
+        <time class="live">2025-03 → <span lang="en">now</span><span lang="hu">most</span></time>
         <div>
-          <div class="t">Started inmedia-digital.service <small>— Full-Stack Developer</small></div>
-          <p lang="en">Maintained the front and back end of the company's website, including the admin dashboard and several white-label sites.</p>
-          <p lang="hu">A cég weboldalának front- és backendjét tartottam karban, az admin felülettel és több white-label oldallal együtt.</p>
-          <div class="tags">next.js · nuxt.js · node.js · express · legacy: yii (php), angular.js, jquery</div>
+          <div class="t">Started bnbmates.service <small>— Full-Stack Developer</small><span class="badge"><span lang="en">freelance</span><span lang="hu">szabadúszó</span></span></div>
+          <p lang="en">Direct booking website with online payments, plus an admin interface for properties and bookings, for a short-term rental company in Bali, Budapest and Dubai.</p>
+          <p lang="hu">Közvetlen foglalási weboldal online fizetéssel, valamint adminfelület az ingatlanok és foglalások kezeléséhez egy Balin, Budapesten és Dubajban működő rövid távú szálláskiadó cégnek.</p>
+        </div>
+      </li>
+      <li>
+        <time>2018-05 → 2026-08</time>
+        <div>
+          <div class="t">Started inmedia-digital.service <small>— Full-Stack Developer, <span lang="en">previously Frontend</span><span lang="hu">korábban frontend</span></small></div>
+          <ul lang="en">
+            <li>Developed and maintained the company website, admin dashboard and several white-label sites.</li>
+            <li>Built a custom video player, a complex admin interface and a landing page generator.</li>
+            <li>Kept the legacy codebase (Yii/PHP, AngularJS, jQuery) running alongside the modern stack.</li>
+          </ul>
+          <ul lang="hu">
+            <li>A cég weboldalát, adminfelületét és több white-label oldalát fejlesztettem és tartottam karban.</li>
+            <li>Egyedi videólejátszót, komplex adminfelületet és landing page generátort építettem.</li>
+            <li>A legacy kódbázist (Yii/PHP, AngularJS, jQuery) a modern stack mellett is életben tartottam.</li>
+          </ul>
+          <div class="tags">next.js · nuxt.js · vue.js · node.js · express</div>
         </div>
       </li>
       <li>
         <time>2021-03 → 2022-01</time>
         <div>
-          <div class="t">Started gravity-rd.service <small>— Frontend Developer</small></div>
-          <p lang="en">Built an admin dashboard on top of a product-recommendation engine for webshops.</p>
-          <p lang="hu">Admin felületet építettem egy webshopoknak szánt termékajánló motor fölé.</p>
+          <div class="t">Started gravity-rd.service <small>— Frontend Developer</small><span class="badge"><span lang="en">remote contractor</span><span lang="hu">távoli, szerződéses</span></span></div>
+          <p lang="en">Built the admin dashboard for a webshop product recommendation engine; optimised and maintained legacy frontend code.</p>
+          <p lang="hu">Admin dashboardot építettem egy webshopoknak szóló termékajánló motorhoz; a legacy frontend kódot optimalizáltam és tartottam karban.</p>
         </div>
       </li>
       <li>
         <time>2019-03 → 2020-04</time>
         <div>
-          <div class="t">Started peaqplus.service <small>— Full-Stack Developer, Assist-Intelligence Kft.</small></div>
-          <p lang="en">User and permission management software for hotel staff. I wrote about 95% of it.</p>
-          <p lang="hu">Felhasználó- és jogosultságkezelő szoftver szállodai személyzetnek. Nagyjából a 95%-át én írtam.</p>
+          <div class="t">Started peaqplus.service <small>— Full-Stack Developer, Assist-Intelligence Kft.</small><span class="badge"><span lang="en">remote contractor</span><span lang="hu">távoli, szerződéses</span></span></div>
+          <p lang="en">Designed and built ~95% of a user and permission management system for hotel staff, from the ground up.</p>
+          <p lang="hu">Szállodai személyzetnek szóló felhasználó- és jogosultságkezelő rendszert terveztem és építettem az alapoktól; nagyjából a 95%-át én írtam.</p>
           <div class="tags">laravel · vue.js · mysql</div>
         </div>
       </li>
       <li>
         <time>2017-08 → 2018-05</time>
         <div>
-          <div class="t">Started cloudent.service <small>— Full-Stack Developer, <span lang="en">Co-Founder</span><span lang="hu">társalapító</span></small></div>
-          <p lang="en">A dental patient-management system, built from zero in nine months. Backend, frontend, database, hosting — the whole stack was mine.</p>
+          <div class="t">Started cloudent.service <small>— <span lang="en">Co-Founder</span><span lang="hu">társalapító</span> &amp; Full-Stack Developer</small></div>
+          <p lang="en">A dental practice management system, built from scratch in nine months. Backend, frontend, database and hosting — the whole stack was mine.</p>
           <p lang="hu">Fogászati betegnyilvántartó rendszer, nulláról, kilenc hónap alatt. Backend, frontend, adatbázis, hosting — az egész stack az enyém volt.</p>
-          <div class="tags">laravel · vue.js · jquery · mysql · aws</div>
+          <div class="tags">laravel · vue.js · angularjs · jquery · mysql · aws</div>
         </div>
       </li>
       <li>
         <time>2017-05 → 2017-08</time>
         <div>
           <div class="t">Started graphit.service <small>— Software Developer</small></div>
-          <p lang="en">Data interfaces for a production-scheduling system in C#, plus frontend work on a documentation site.</p>
-          <p lang="hu">Adatinterfészek egy termelésütemező szoftverhez C#-ban, mellette frontend feladatok egy dokumentációs oldalon.</p>
+          <p lang="en">A C# data interface for a production scheduling system, plus frontend work on a documentation site.</p>
+          <p lang="hu">Adatinterfész egy termelésütemező rendszerhez C#-ban, mellette frontendfeladatok egy dokumentációs oldalon.</p>
           <div class="tags">c# · jquery</div>
         </div>
       </li>
@@ -215,25 +258,17 @@ footer{display:flex;justify-content:space-between;gap:12px;padding:8px 16px 18px
         <time>2016-07 → 2016-09</time>
         <div>
           <div class="t">Started ozeki.service <small>— Software Developer</small></div>
-          <p lang="en">.NET-based JavaScript framework development in C#. Frontend optimisation for Ozeki Dialer.</p>
-          <p lang="hu">.NET-alapú JavaScript keretrendszer fejlesztése C#-ban. Frontend-optimalizálás az Ozeki Dialerhez.</p>
-          <div class="tags">c# · .net · javascript</div>
+          <p lang="en">Developed the company’s .NET-based framework in C#; optimised the Ozeki Dialer frontend for mobile.</p>
+          <p lang="hu">A cég .NET-alapú keretrendszerének fejlesztése C#-ban; az Ozeki Dialer frontendjének optimalizálása mobilra.</p>
+          <div class="tags">c# · .net · jquery</div>
         </div>
       </li>
       <li class="cron">
         <time>cron</time>
         <div>
           <div class="t">teach-java</div>
-          <p lang="en">Prepared six students for high-level programming languages; all of them passed on the first attempt.</p>
-          <p lang="hu">Hat diákot készítettem fel magas szintű programozási nyelvekből; mindegyik elsőre átment.</p>
-        </div>
-      </li>
-      <li class="cron">
-        <time>cron</time>
-        <div>
-          <div class="t">unity-game</div>
-          <p lang="en">Built my own 3D game in Unity, in C#.</p>
-          <p lang="hu">Saját 3D játékot készítettem Unityben, C#-ban.</p>
+          <p lang="en">Tutored six university students through a semester-long programming course; all passed on their first attempt.</p>
+          <p lang="hu">Hat egyetemi hallgatót korrepetáltam egy féléves programozási tárgyból; mindannyian elsőre teljesítették.</p>
         </div>
       </li>
     </ol>
@@ -266,17 +301,22 @@ footer{display:flex;justify-content:space-between;gap:12px;padding:8px 16px 18px
         <li>supabase <span>2025</span></li>
         <li>stripe <span>2025</span></li>
       </ul></div>
-      <div><h3>infra</h3><ul>
-        <li>linux <span>2016</span></li>
+      <div><h3>data</h3><ul>
         <li>postgresql <span>2025</span></li>
         <li>mysql <span>2017</span></li>
-        <li>nginx <span>2017</span></li>
-        <li>aws <span>2017</span></li>
-        <li>cloudflare <span>2025</span></li>
       </ul></div>
-      <div><h3>tools</h3><ul>
-        <li>figma</li>
+      <div><h3>infra</h3><ul>
+        <li>cloudflare <span>2025</span></li>
+        <li>aws <span>2017</span></li>
+        <li>docker</li>
+        <li>linux <span>2016</span></li>
+        <li>nginx <span>2017</span></li>
+      </ul></div>
+      <div><h3>ai &amp; tools</h3><ul>
+        <li>llm integration <span>2025</span></li>
+        <li>self-hosted models <span>2025</span></li>
         <li>claude</li>
+        <li>figma</li>
         <li>git</li>
       </ul></div>
     </div>
@@ -303,6 +343,7 @@ Valódi számok, vagy semmilyen.</pre>
 <span class="mut">phone</span>    = <a href="tel:+36702207656">+36 70 220 7656</a>
 <span class="mut">linkedin</span> = <a href="https://linkedin.com/in/lajos-lengyel">linkedin.com/in/lajos-lengyel</a>
 <span class="mut">github</span>   = <a href="https://github.com/lajoslengyel">github.com/lajoslengyel</a>
+<span class="mut">company</span>  = <a href="https://aionsense.ai">aionsense.ai</a>
 <span class="mut">cv</span>       = <a href="CV_EN_Lajos_Lengyel.pdf">CV_EN_Lajos_Lengyel.pdf</a>
 <span class="mut">location</span> = Hungary
 <span class="mut">remote</span>   = yes
@@ -336,6 +377,16 @@ $$('.up-short').forEach(e => e.textContent = (e.classList.contains('big') ? '' :
 $$('.up-years').forEach(e => e.textContent = `${y} years ${m} months ago`);
 $$('.up-long').forEach(e => e.textContent = `${y} years, ${m} months`);
 $$('.date').forEach(e => e.textContent = now.toISOString().slice(0, 10));
+
+// EN / HU switch — initial value is set in <head>
+const langBtns = [...$$('.lang button')];
+const setLang = l => {
+  document.documentElement.dataset.lang = document.documentElement.lang = l;
+  langBtns.forEach(b => b.setAttribute('aria-pressed', b.dataset.set === l));
+  try { localStorage.setItem('lang', l) } catch (e) {}
+};
+langBtns.forEach(b => b.addEventListener('click', () => setLang(b.dataset.set)));
+langBtns.forEach(b => b.setAttribute('aria-pressed', b.dataset.set === document.documentElement.dataset.lang));
 
 // workspace chips follow scroll
 const chips = [...$$('.ws a')];
